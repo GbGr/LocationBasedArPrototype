@@ -1,0 +1,21 @@
+.root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.canvas {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.button {
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+}
