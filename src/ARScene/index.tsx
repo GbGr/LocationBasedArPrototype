@@ -5,6 +5,7 @@ import { Object3D } from 'three'
 // @ts-ignore
 import * as THREEx from '@ar-js-org/ar.js/three.js/build/ar-threex-location-only'
 import isMobile from './misc/isMobile'
+import useLoadModel from './misc/useLoadModel'
 
 if (typeof window !== 'undefined') { // @ts-ignore
   window['THREE'] = THREE;
@@ -28,6 +29,7 @@ const ARScene: FC<ARSceneProps> = ({ point, onCatch }) => {
   const htmlCanvasElementRef = createRef<HTMLCanvasElement>();
   const catchButtonRef = createRef<HTMLButtonElement>();
   const [ canCatch, setCanCatch ] = useState<boolean>(false);
+  const { mesh, isLoading, scene, mixer } = useLoadModel();
   const onClickCatch = (): void => {
     if (!onCatch) return;
 
@@ -35,23 +37,31 @@ const ARScene: FC<ARSceneProps> = ({ point, onCatch }) => {
   }
 
   useEffect(() => {
+    if (!mesh || isLoading) return;
     if (!htmlCanvasElementRef.current) return;
     if (initialized) return;
     initialized = true;
     let requestAnimationFrameId: number;
 
     const oneDegAsRad = THREE.MathUtils.degToRad(1);
+    const clock = new THREE.Clock();
 
-    const scene = new THREE.Scene();
+    const light = new THREE.HemisphereLight(0xC8FDFF, 0x000000, 10);
+    scene.add(light);
     const camera = new THREE.PerspectiveCamera(80, 2, 0.1, 50000);
     const renderer = new THREE.WebGLRenderer({ canvas: htmlCanvasElementRef.current });
     const threex = new THREEx.LocationBased(scene, camera);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+
     let rewardMesh: Object3D;
 
     const createRewardMesh = (): Object3D => {
-      const tmpGeometry = new THREE.BoxGeometry(10, 10, 10);
-      const tmpMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
-      const mesh = new THREE.Mesh(tmpGeometry, tmpMaterial);
+      // const tmpGeometry = new THREE.BoxGeometry(10, 10, 10);
+      // const tmpMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+      // const mesh = new THREE.Mesh(tmpGeometry, tmpMaterial);
+      // mesh.name = point.id;
       mesh.name = point.id;
 
       return mesh;
@@ -85,6 +95,7 @@ const ARScene: FC<ARSceneProps> = ({ point, onCatch }) => {
       cam.update();
       renderer.render(scene, camera);
       setCanCatch(getAngleToReward() < 1);
+      mixer.update(clock.getDelta());
       requestAnimationFrame(render);
     }
 
@@ -147,7 +158,7 @@ const ARScene: FC<ARSceneProps> = ({ point, onCatch }) => {
       // if (requestAnimationFrameId) cancelAnimationFrame(requestAnimationFrameId);
     }
 
-  }, []);
+  }, [ mesh, isLoading ]);
 
   return (
     <div className={classes.root}>
