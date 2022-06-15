@@ -22,18 +22,25 @@ interface ARPoint {
 
 interface ARSceneProps {
   point: ARPoint;
-  onCatch?: (point: ARPoint) => void;
+  onCatch?: (point: ARPoint, screenshot: string) => void;
 }
 
 const ARScene: FC<ARSceneProps> = ({ point, onCatch }) => {
   const htmlCanvasElementRef = createRef<HTMLCanvasElement>();
   const catchButtonRef = createRef<HTMLButtonElement>();
   const [ canCatch, setCanCatch ] = useState<boolean>(false);
+  const [ isCatching, setIsCatching ] = useState(false);
   const { mesh, isLoading, scene, mixer } = useLoadModel();
   const onClickCatch = (): void => {
-    if (!onCatch) return;
+    if (!onCatch || isCatching) return;
 
-    onCatch(point);
+    setIsCatching(true);
+
+    const screenshot = htmlCanvasElementRef.current?.toDataURL('image/jpeg', 0.7);
+
+    if (!screenshot) throw new Error('error during screenshot capturing');
+
+    onCatch(point, screenshot);
   }
 
   useEffect(() => {
@@ -48,8 +55,8 @@ const ARScene: FC<ARSceneProps> = ({ point, onCatch }) => {
 
     const light = new THREE.HemisphereLight(0xC8FDFF, 0x000000, 10);
     scene.add(light);
-    const camera = new THREE.PerspectiveCamera(80, 2, 0.1, 50000);
-    const renderer = new THREE.WebGLRenderer({ canvas: htmlCanvasElementRef.current });
+    const camera = new THREE.PerspectiveCamera(80, htmlCanvasElementRef.current.clientWidth / htmlCanvasElementRef.current.clientHeight, 0.1, 50000);
+    const renderer = new THREE.WebGLRenderer({ canvas: htmlCanvasElementRef.current, preserveDrawingBuffer: true, });
     const threex = new THREEx.LocationBased(scene, camera);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
@@ -134,7 +141,12 @@ const ARScene: FC<ARSceneProps> = ({ point, onCatch }) => {
       VECTOR3_BUFFER.set(0, 0, -1);
       VECTOR3_BUFFER.applyQuaternion(camera.quaternion);
       const rewardPosition = scene.getObjectByName(point.id)?.position as any;
-      return rewardPosition ? VECTOR3_BUFFER.angleTo(rewardPosition) : Number.MAX_SAFE_INTEGER;
+
+      return rewardPosition
+        ? VECTOR3_BUFFER.angleTo(rewardPosition)
+        : process.env.NODE_ENV === 'production'
+          ? Number.MAX_SAFE_INTEGER
+          : 0;
     }
 
     const resizeUpdate = () => {

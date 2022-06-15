@@ -11,7 +11,10 @@ root.render(
   <React.StrictMode>
     <ARScene
       point={{ id: 'POINT_1', lat: 55.6993225 + 0.0004, long: 37.7354969, }}
-      onCatch={(point) => alert(`Catched: ${JSON.stringify(point, null, 2)}`)}
+      onCatch={(point, screenshot) => {
+        alert(`Catched: ${JSON.stringify(point, null, 2)}`);
+        document.body.innerHTML = `<img style="width:50%;" src="${screenshot}" alt="screenshot">`
+      }}
     />
   </React.StrictMode>
 );

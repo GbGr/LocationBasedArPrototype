@@ -24,6 +24,7 @@ const useLoadModel = (): { scene: Scene, mesh: null | Object3D, isLoading: boole
       model.scale.set(4, 4, 4);
       const mesh = new Group();
       mesh.add(model);
+      mesh.position.z = -100;
       mesh.rotation.y = Math.PI / 2;
       setIsLoading(false);
       setMesh(mesh);
