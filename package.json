@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@ar-js-org/ar.js": "^3.4.0",
+    "@react-three/drei": "^9.13.1",
+    "@react-three/fiber": "^8.0.26",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -12,6 +14,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/three": "^0.140.0",
+    "eventemitter3": "^4.0.7",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
