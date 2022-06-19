@@ -6420,6 +6420,11 @@ multicast-dns@^7.2.4:
     dns-packet "^5.2.2"
     thunky "^1.0.2"
 
+mutation-sentinel@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/mutation-sentinel/-/mutation-sentinel-1.0.7.tgz#498ec530f692feb2edd240bc1f5cc237872ec8c2"
+  integrity sha512-j7c8bo3KV/k6wZNTUMy2CScGF4mMu2+CELr32njVX05sw/zattQNDnd+Ymj3GyVNCG0ijpErpqgNk+JHWQRjww==
+
 nanoid@^3.3.4:
   version "3.3.4"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"

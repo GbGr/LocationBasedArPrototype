@@ -8,13 +8,12 @@ import { Euler } from 'three/src/math/Euler'
 import { ARScenePoint } from './ARSceneTypes'
 
 const eggModelRotation = new Euler(0, Math.PI/2, 0);
-const eggModelScale = new Vector3(0.1, 0.1, 0.1);
+const eggModelScale = new Vector3(1, 1, 1);
 
 interface EggModelProps {
   point: ARScenePoint;
   threexRef: MutableRefObject<any>;
 }
-
 const EggModel: FC<EggModelProps> = ({ point, threexRef }) => {
   const { camera } = useThree();
   const mixerRef = useRef<AnimationMixer>();
@@ -55,12 +54,10 @@ const EggModel: FC<EggModelProps> = ({ point, threexRef }) => {
     return ARSceneEventBus.on(ARSceneEvent.GPS_UPDATED, (gpsData: GeolocationPosition) => {
       const eggGroup = eggGroupRef.current;
       if (!eggGroup) throw new Error('undefined eggGroup');
-      console.log('update model position');
-      // alert(`pos: ${gpsData.coords.latitude}, ${gpsData.coords.longitude};\n point: ${point.lat}; ${point.long}`);
       threexRef.current.setWorldPosition(eggGroup, point.long, point.lat);
-      ARSceneEventBus.emit(ARSceneEvent.DEBUG, { distance: camera.position.sub(eggGroup.position).length()});
+      ARSceneEventBus.emit(ARSceneEvent.DEBUG, { distance: camera.position.clone().sub(eggGroup.position).length()});
     });
-  }, [ threexRef ]);
+  }, [ threexRef, eggGroupRef, camera ]);
 
   useFrame((state, delta) => {
     if (isEggAnimationPlaying) {
@@ -71,6 +68,10 @@ const EggModel: FC<EggModelProps> = ({ point, threexRef }) => {
   return (
     <group ref={eggGroupRef as any} scale={eggModelScale} rotation={eggModelRotation}>
       <primitive object={eggModel.scene}></primitive>
+      {/*<mesh>*/}
+      {/*  <sphereBufferGeometry />*/}
+      {/*  <meshBasicMaterial color={'#ff0000'}></meshBasicMaterial>*/}
+      {/*</mesh>*/}
     </group>
   );
 };

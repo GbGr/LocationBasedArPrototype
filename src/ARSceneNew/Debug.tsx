@@ -9,7 +9,7 @@ const Debug: FC = () => {
 
   useEffect(() => {
     return ARSceneEventBus.on(ARSceneEvent.DEBUG, (stats: any) => {
-      console.log(JSON.stringify(debug, null, 2))
+      // console.log(JSON.stringify(debug, null, 2))
       Object.keys(stats).forEach((key) => debug[key] = stats[key]);
       setDebug({ ...debug });
     });

@@ -6,8 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import ARScene from './ARSceneNew'
 const EXAMPLE_POINT = {
   id: 'the point id',
-  lat: 54.3692096,
-  long: 37.6929113,
+  lat: 54.3804364,
+  long: 37.6832711,
 };
 
 const root = ReactDOM.createRoot(
@@ -15,13 +15,6 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    {/*<ARScene*/}
-    {/*  point={{ id: 'POINT_1', lat: 55.6993225 + 0.0004, long: 37.7354969, }}*/}
-    {/*  onCatch={(point, screenshot) => {*/}
-    {/*    alert(`Catched: ${JSON.stringify(point, null, 2)}`);*/}
-    {/*    document.body.innerHTML = `<img style="width:50%;" src="${screenshot}" alt="screenshot">`*/}
-    {/*  }}*/}
-    {/*/>*/}
     <ARScene
       point={EXAMPLE_POINT}
       onCaptured={(data) => alert(JSON.stringify(data, null, 2))}
